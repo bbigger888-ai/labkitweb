@@ -1,381 +1,163 @@
-import { FurnitureTemplate, FurnitureCategory } from '../types';
+import { CodingTask } from '../types';
 
-export const furnitureTemplates: FurnitureTemplate[] = [
-  // Сидения
+// Задачи для разработчиков
+export const codingTasks: CodingTask[] = [
   {
-    id: 'sofa-3seat',
-    name: 'Диван 3-местный',
-    category: 'seating',
-    defaultSize: { width: 220, height: 90 },
-    minSize: { width: 180, height: 80 },
-    maxSize: { width: 300, height: 120 },
-    icon: '🛋️',
-    color: '#8B7355',
-  },
-  {
-    id: 'sofa-2seat',
-    name: 'Диван 2-местный',
-    category: 'seating',
-    defaultSize: { width: 160, height: 85 },
-    minSize: { width: 140, height: 75 },
-    maxSize: { width: 200, height: 100 },
-    icon: '🛋️',
-    color: '#A0826D',
-  },
-  {
-    id: 'armchair',
-    name: 'Кресло',
-    category: 'seating',
-    defaultSize: { width: 80, height: 80 },
-    minSize: { width: 60, height: 60 },
-    maxSize: { width: 100, height: 100 },
-    icon: '🪑',
-    color: '#9B8574',
-  },
-  {
-    id: 'chair',
-    name: 'Стул',
-    category: 'seating',
-    defaultSize: { width: 45, height: 45 },
-    minSize: { width: 40, height: 40 },
-    maxSize: { width: 55, height: 55 },
-    icon: '🪑',
-    color: '#CD853F',
-  },
-  {
-    id: 'office-chair',
-    name: 'Офисное кресло',
-    category: 'seating',
-    defaultSize: { width: 65, height: 65 },
-    minSize: { width: 55, height: 55 },
-    maxSize: { width: 75, height: 75 },
-    icon: '🪑',
-    color: '#2F2F2F',
-  },
+    id: 'task-1',
+    title: 'Переворот строки',
+    description: `Напишите функцию reverseString, которая принимает строку и возвращает её в перевёрнутом виде.
 
-  // Столы
-  {
-    id: 'dining-table',
-    name: 'Обеденный стол',
-    category: 'tables',
-    defaultSize: { width: 160, height: 90 },
-    minSize: { width: 120, height: 70 },
-    maxSize: { width: 240, height: 120 },
-    icon: '🪑',
-    color: '#8B4513',
-  },
-  {
-    id: 'coffee-table',
-    name: 'Журнальный стол',
-    category: 'tables',
-    defaultSize: { width: 100, height: 60 },
-    minSize: { width: 60, height: 40 },
-    maxSize: { width: 140, height: 80 },
-    icon: '📦',
-    color: '#A0522D',
-  },
-  {
-    id: 'desk',
-    name: 'Письменный стол',
-    category: 'tables',
-    defaultSize: { width: 140, height: 70 },
-    minSize: { width: 100, height: 50 },
-    maxSize: { width: 200, height: 100 },
-    icon: '🖥️',
-    color: '#5C4033',
-  },
-  {
-    id: 'tv-stand',
-    name: 'ТВ-тумба',
-    category: 'tables',
-    defaultSize: { width: 150, height: 45 },
-    minSize: { width: 100, height: 35 },
-    maxSize: { width: 200, height: 55 },
-    icon: '📺',
-    color: '#3C3C3C',
-  },
+Примеры:
+- reverseString("hello") → "olleh"
+- reverseString("JavaScript") → "tpircSavaJ"
+- reverseString("") → ""`,
+    difficulty: 'easy',
+    language: 'javascript',
+    starterCode: `function reverseString(str) {
+  // Ваш код здесь
 
-  // Хранение
-  {
-    id: 'wardrobe',
-    name: 'Шкаф',
-    category: 'storage',
-    defaultSize: { width: 180, height: 60 },
-    minSize: { width: 100, height: 50 },
-    maxSize: { width: 300, height: 80 },
-    icon: '🚪',
-    color: '#D2B48C',
-  },
-  {
-    id: 'bookshelf',
-    name: 'Книжный шкаф',
-    category: 'storage',
-    defaultSize: { width: 100, height: 35 },
-    minSize: { width: 60, height: 25 },
-    maxSize: { width: 180, height: 50 },
-    icon: '📚',
-    color: '#8B7355',
-  },
-  {
-    id: 'dresser',
-    name: 'Комод',
-    category: 'storage',
-    defaultSize: { width: 100, height: 50 },
-    minSize: { width: 60, height: 40 },
-    maxSize: { width: 150, height: 60 },
-    icon: '🗄️',
-    color: '#BC8F8F',
-  },
-  {
-    id: 'nightstand',
-    name: 'Тумбочка',
-    category: 'storage',
-    defaultSize: { width: 45, height: 40 },
-    minSize: { width: 35, height: 30 },
-    maxSize: { width: 60, height: 50 },
-    icon: '🛏️',
-    color: '#DEB887',
-  },
+}
 
-  // Кровати
-  {
-    id: 'bed-king',
-    name: 'Кровать King Size',
-    category: 'beds',
-    defaultSize: { width: 200, height: 220 },
-    minSize: { width: 180, height: 200 },
-    maxSize: { width: 220, height: 240 },
-    icon: '🛏️',
-    color: '#6B4423',
+// Не изменяйте код ниже
+module.exports = { reverseString };`,
+    testCases: [
+      { id: 't1', input: 'hello', expectedOutput: 'olleh', isHidden: false },
+      { id: 't2', input: 'JavaScript', expectedOutput: 'tpircSavaJ', isHidden: false },
+      { id: 't3', input: '', expectedOutput: '', isHidden: false },
+      { id: 't4', input: 'a', expectedOutput: 'a', isHidden: true },
+      { id: 't5', input: '12345', expectedOutput: '54321', isHidden: true },
+    ],
+    timeLimit: 15,
   },
   {
-    id: 'bed-double',
-    name: 'Двуспальная кровать',
-    category: 'beds',
-    defaultSize: { width: 160, height: 200 },
-    minSize: { width: 140, height: 190 },
-    maxSize: { width: 180, height: 210 },
-    icon: '🛏️',
-    color: '#7B5A3D',
-  },
-  {
-    id: 'bed-single',
-    name: 'Односпальная кровать',
-    category: 'beds',
-    defaultSize: { width: 90, height: 200 },
-    minSize: { width: 80, height: 180 },
-    maxSize: { width: 120, height: 210 },
-    icon: '🛏️',
-    color: '#8B6F4E',
-  },
-  {
-    id: 'sofa-bed',
-    name: 'Диван-кровать',
-    category: 'beds',
-    defaultSize: { width: 200, height: 100 },
-    minSize: { width: 160, height: 80 },
-    maxSize: { width: 240, height: 120 },
-    icon: '🛋️',
-    color: '#696969',
-  },
+    id: 'task-2',
+    title: 'Поиск дубликатов',
+    description: `Напишите функцию findDuplicates, которая принимает массив чисел и возвращает массив дубликатов (элементы, встречающиеся более одного раза).
 
-  // Кухня
-  {
-    id: 'kitchen-cabinet',
-    name: 'Кухонный шкаф',
-    category: 'kitchen',
-    defaultSize: { width: 60, height: 60 },
-    minSize: { width: 40, height: 50 },
-    maxSize: { width: 120, height: 70 },
-    icon: '🗄️',
-    color: '#F5F5DC',
-  },
-  {
-    id: 'kitchen-counter',
-    name: 'Столешница',
-    category: 'kitchen',
-    defaultSize: { width: 240, height: 60 },
-    minSize: { width: 100, height: 50 },
-    maxSize: { width: 400, height: 80 },
-    icon: '📦',
-    color: '#808080',
-  },
-  {
-    id: 'kitchen-island',
-    name: 'Кухонный остров',
-    category: 'kitchen',
-    defaultSize: { width: 140, height: 90 },
-    minSize: { width: 100, height: 60 },
-    maxSize: { width: 200, height: 120 },
-    icon: '🏝️',
-    color: '#A9A9A9',
-  },
-  {
-    id: 'sink',
-    name: 'Мойка',
-    category: 'kitchen',
-    defaultSize: { width: 60, height: 50 },
-    minSize: { width: 40, height: 40 },
-    maxSize: { width: 100, height: 60 },
-    icon: '🚰',
-    color: '#C0C0C0',
-  },
+Результат должен содержать только уникальные дубликаты в порядке их первого появления.
 
-  // Ванная
-  {
-    id: 'bathtub',
-    name: 'Ванна',
-    category: 'bathroom',
-    defaultSize: { width: 170, height: 75 },
-    minSize: { width: 150, height: 70 },
-    maxSize: { width: 200, height: 90 },
-    icon: '🛁',
-    color: '#E8E8E8',
-  },
-  {
-    id: 'shower',
-    name: 'Душевая кабина',
-    category: 'bathroom',
-    defaultSize: { width: 90, height: 90 },
-    minSize: { width: 70, height: 70 },
-    maxSize: { width: 120, height: 120 },
-    icon: '🚿',
-    color: '#ADD8E6',
-  },
-  {
-    id: 'toilet',
-    name: 'Унитаз',
-    category: 'bathroom',
-    defaultSize: { width: 40, height: 65 },
-    minSize: { width: 35, height: 55 },
-    maxSize: { width: 50, height: 75 },
-    icon: '🚽',
-    color: '#FFFAFA',
-  },
-  {
-    id: 'bathroom-sink',
-    name: 'Раковина',
-    category: 'bathroom',
-    defaultSize: { width: 55, height: 45 },
-    minSize: { width: 40, height: 35 },
-    maxSize: { width: 80, height: 60 },
-    icon: '🚰',
-    color: '#F0F0F0',
-  },
-  {
-    id: 'washing-machine',
-    name: 'Стиральная машина',
-    category: 'bathroom',
-    defaultSize: { width: 60, height: 60 },
-    minSize: { width: 55, height: 55 },
-    maxSize: { width: 70, height: 70 },
-    icon: '🌀',
-    color: '#D3D3D3',
-  },
+Примеры:
+- findDuplicates([1, 2, 3, 2, 4, 3]) → [2, 3]
+- findDuplicates([1, 1, 1, 1]) → [1]
+- findDuplicates([1, 2, 3]) → []`,
+    difficulty: 'medium',
+    language: 'javascript',
+    starterCode: `function findDuplicates(arr) {
+  // Ваш код здесь
 
-  // Бытовая техника
-  {
-    id: 'refrigerator',
-    name: 'Холодильник',
-    category: 'appliances',
-    defaultSize: { width: 70, height: 70 },
-    minSize: { width: 55, height: 55 },
-    maxSize: { width: 100, height: 100 },
-    icon: '🧊',
-    color: '#B0B0B0',
-  },
-  {
-    id: 'stove',
-    name: 'Плита',
-    category: 'appliances',
-    defaultSize: { width: 60, height: 60 },
-    minSize: { width: 50, height: 50 },
-    maxSize: { width: 90, height: 90 },
-    icon: '🔥',
-    color: '#2F2F2F',
-  },
-  {
-    id: 'dishwasher',
-    name: 'Посудомоечная машина',
-    category: 'appliances',
-    defaultSize: { width: 60, height: 60 },
-    minSize: { width: 45, height: 55 },
-    maxSize: { width: 70, height: 65 },
-    icon: '🍽️',
-    color: '#A0A0A0',
-  },
-  {
-    id: 'tv',
-    name: 'Телевизор',
-    category: 'appliances',
-    defaultSize: { width: 120, height: 10 },
-    minSize: { width: 80, height: 5 },
-    maxSize: { width: 180, height: 15 },
-    icon: '📺',
-    color: '#1C1C1C',
-  },
+}
 
-  // Декор
-  {
-    id: 'plant-large',
-    name: 'Большое растение',
-    category: 'decor',
-    defaultSize: { width: 50, height: 50 },
-    minSize: { width: 30, height: 30 },
-    maxSize: { width: 80, height: 80 },
-    icon: '🌿',
-    color: '#228B22',
+// Не изменяйте код ниже
+module.exports = { findDuplicates };`,
+    testCases: [
+      { id: 't1', input: '[1, 2, 3, 2, 4, 3]', expectedOutput: '[2, 3]', isHidden: false },
+      { id: 't2', input: '[1, 1, 1, 1]', expectedOutput: '[1]', isHidden: false },
+      { id: 't3', input: '[1, 2, 3]', expectedOutput: '[]', isHidden: false },
+      { id: 't4', input: '[]', expectedOutput: '[]', isHidden: true },
+      { id: 't5', input: '[5, 5, 5, 3, 3, 1]', expectedOutput: '[5, 3]', isHidden: true },
+    ],
+    timeLimit: 20,
   },
   {
-    id: 'plant-small',
-    name: 'Маленькое растение',
-    category: 'decor',
-    defaultSize: { width: 25, height: 25 },
-    minSize: { width: 15, height: 15 },
-    maxSize: { width: 40, height: 40 },
-    icon: '🪴',
-    color: '#32CD32',
+    id: 'task-3',
+    title: 'Сбалансированные скобки',
+    description: `Напишите функцию isBalanced, которая проверяет, сбалансированы ли скобки в строке.
+
+Поддерживаемые типы скобок: (), [], {}
+
+Примеры:
+- isBalanced("()") → true
+- isBalanced("([{}])") → true
+- isBalanced("([)]") → false
+- isBalanced("((") → false`,
+    difficulty: 'medium',
+    language: 'javascript',
+    starterCode: `function isBalanced(str) {
+  // Ваш код здесь
+
+}
+
+// Не изменяйте код ниже
+module.exports = { isBalanced };`,
+    testCases: [
+      { id: 't1', input: '()', expectedOutput: 'true', isHidden: false },
+      { id: 't2', input: '([{}])', expectedOutput: 'true', isHidden: false },
+      { id: 't3', input: '([)]', expectedOutput: 'false', isHidden: false },
+      { id: 't4', input: '((', expectedOutput: 'false', isHidden: false },
+      { id: 't5', input: '', expectedOutput: 'true', isHidden: true },
+      { id: 't6', input: '{[()]}[]', expectedOutput: 'true', isHidden: true },
+    ],
+    timeLimit: 25,
   },
   {
-    id: 'rug',
-    name: 'Ковёр',
-    category: 'decor',
-    defaultSize: { width: 200, height: 150 },
-    minSize: { width: 100, height: 70 },
-    maxSize: { width: 350, height: 250 },
-    icon: '🟫',
-    color: '#8B4513',
+    id: 'task-4',
+    title: 'Плоский массив',
+    description: `Напишите функцию flattenArray, которая преобразует вложенный массив в одномерный.
+
+Функция должна работать с любым уровнем вложенности.
+
+Примеры:
+- flattenArray([1, [2, 3], [4, [5, 6]]]) → [1, 2, 3, 4, 5, 6]
+- flattenArray([[1], [[2]], [[[3]]]]) → [1, 2, 3]
+- flattenArray([]) → []`,
+    difficulty: 'hard',
+    language: 'javascript',
+    starterCode: `function flattenArray(arr) {
+  // Ваш код здесь
+
+}
+
+// Не изменяйте код ниже
+module.exports = { flattenArray };`,
+    testCases: [
+      { id: 't1', input: '[1, [2, 3], [4, [5, 6]]]', expectedOutput: '[1, 2, 3, 4, 5, 6]', isHidden: false },
+      { id: 't2', input: '[[1], [[2]], [[[3]]]]', expectedOutput: '[1, 2, 3]', isHidden: false },
+      { id: 't3', input: '[]', expectedOutput: '[]', isHidden: false },
+      { id: 't4', input: '[1, 2, 3]', expectedOutput: '[1, 2, 3]', isHidden: true },
+      { id: 't5', input: '[[[[[[1]]]]]]', expectedOutput: '[1]', isHidden: true },
+    ],
+    timeLimit: 30,
   },
   {
-    id: 'floor-lamp',
-    name: 'Торшер',
-    category: 'decor',
-    defaultSize: { width: 35, height: 35 },
-    minSize: { width: 25, height: 25 },
-    maxSize: { width: 50, height: 50 },
-    icon: '💡',
-    color: '#FFD700',
+    id: 'task-5',
+    title: 'Debounce функция',
+    description: `Реализуйте функцию debounce, которая ограничивает частоту вызова переданной функции.
+
+Debounce откладывает выполнение функции до тех пор, пока не пройдёт указанное время с момента последнего вызова.
+
+Примеры использования:
+const debouncedFn = debounce(console.log, 1000);
+debouncedFn("a"); // ничего
+debouncedFn("b"); // ничего
+// через 1 секунду выведет "b"`,
+    difficulty: 'hard',
+    language: 'javascript',
+    starterCode: `function debounce(fn, delay) {
+  // Ваш код здесь
+
+}
+
+// Не изменяйте код ниже
+module.exports = { debounce };`,
+    testCases: [
+      { id: 't1', input: 'basic', expectedOutput: 'delayed call', isHidden: false },
+      { id: 't2', input: 'multiple', expectedOutput: 'last call only', isHidden: false },
+      { id: 't3', input: 'args', expectedOutput: 'preserves arguments', isHidden: true },
+    ],
+    timeLimit: 30,
   },
 ];
 
-export const categoryNames: Record<FurnitureCategory, string> = {
-  seating: 'Сидения',
-  tables: 'Столы',
-  storage: 'Хранение',
-  beds: 'Кровати',
-  kitchen: 'Кухня',
-  bathroom: 'Ванная',
-  appliances: 'Техника',
-  decor: 'Декор',
+export const difficultyLabels = {
+  easy: 'Легко',
+  medium: 'Средне',
+  hard: 'Сложно',
 };
 
-export const categoryIcons: Record<FurnitureCategory, string> = {
-  seating: '🛋️',
-  tables: '🪑',
-  storage: '🗄️',
-  beds: '🛏️',
-  kitchen: '🍳',
-  bathroom: '🚿',
-  appliances: '📺',
-  decor: '🌿',
+export const languageLabels = {
+  javascript: 'JavaScript',
+  typescript: 'TypeScript',
+  python: 'Python',
+  java: 'Java',
+  csharp: 'C#',
 };

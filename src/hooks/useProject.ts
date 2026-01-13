@@ -1,259 +1,188 @@
-import { useState, useCallback, useEffect } from 'react';
-import { Project, Room, FurnitureItem, RoomType, Point, Size, DoorWindow } from '../types';
-import { generateId } from '../utils/calculations';
-import { roomTypeDefaults, roomTypeColors, roomTypeNames } from '../data/rooms';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Role, InterviewState, BugReport, TestCaseDoc } from '../types';
 
-const STORAGE_KEY = 'apartment-planner-project';
+const STORAGE_KEY = 'interview-platform-state';
 
-const createDefaultProject = (): Project => ({
-  id: generateId(),
-  name: 'Новый проект',
-  createdAt: new Date().toISOString(),
-  updatedAt: new Date().toISOString(),
-  rooms: [],
-  settings: {
-    scale: 0.15, // 15 пикселей на сантиметр
-    gridSize: 50, // сетка 50 см
-    showGrid: true,
-    showDimensions: true,
-    currency: '₽',
-  },
+const createDefaultState = (): InterviewState => ({
+  currentRole: null,
+  candidateName: '',
+  isInterviewStarted: false,
+  currentTaskIndex: 0,
+  timeRemaining: 0,
+  completedTasks: [],
 });
 
-export function useProject() {
-  const [project, setProject] = useState<Project>(() => {
+export function useInterview() {
+  const [state, setState] = useState<InterviewState>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
         return JSON.parse(saved);
       } catch {
-        return createDefaultProject();
+        return createDefaultState();
       }
     }
-    return createDefaultProject();
+    return createDefaultState();
   });
+
+  const [code, setCode] = useState<string>('');
+  const [bugReports, setBugReports] = useState<BugReport[]>([]);
+  const [testCases, setTestCases] = useState<TestCaseDoc[]>([]);
+  const [analysisNotes, setAnalysisNotes] = useState<string>('');
+  const [requirements, setRequirements] = useState<string>('');
+  const timerRef = useRef<number | null>(null);
 
   // Автосохранение
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
-  }, [project]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }, [state]);
 
-  // Обновление проекта
-  const updateProject = useCallback((updates: Partial<Project>) => {
-    setProject((prev) => ({
-      ...prev,
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    }));
-  }, []);
+  // Таймер
+  useEffect(() => {
+    if (state.isInterviewStarted && state.timeRemaining > 0) {
+      timerRef.current = window.setInterval(() => {
+        setState((prev) => ({
+          ...prev,
+          timeRemaining: Math.max(0, prev.timeRemaining - 1),
+        }));
+      }, 1000);
+    }
 
-  // Создание новой комнаты
-  const addRoom = useCallback(
-    (type: RoomType, position: Point) => {
-      const defaults = roomTypeDefaults[type];
-      const newRoom: Room = {
-        id: generateId(),
-        name: roomTypeNames[type],
-        type,
-        position,
-        size: { width: defaults.width, height: defaults.height },
-        rotation: 0,
-        color: roomTypeColors[type],
-        wallHeight: defaults.wallHeight,
-        floorType: type === 'bathroom' ? 'tile' : 'laminate',
-        wallType: type === 'bathroom' ? 'tile' : 'paint',
-        ceilingType: 'paint',
-        furniture: [],
-        doors: [],
-        windows: [],
-      };
-
-      setProject((prev) => ({
-        ...prev,
-        rooms: [...prev.rooms, newRoom],
-        updatedAt: new Date().toISOString(),
-      }));
-
-      return newRoom.id;
-    },
-    []
-  );
-
-  // Обновление комнаты
-  const updateRoom = useCallback((roomId: string, updates: Partial<Room>) => {
-    setProject((prev) => ({
-      ...prev,
-      rooms: prev.rooms.map((room) =>
-        room.id === roomId ? { ...room, ...updates } : room
-      ),
-      updatedAt: new Date().toISOString(),
-    }));
-  }, []);
-
-  // Удаление комнаты
-  const deleteRoom = useCallback((roomId: string) => {
-    setProject((prev) => ({
-      ...prev,
-      rooms: prev.rooms.filter((room) => room.id !== roomId),
-      updatedAt: new Date().toISOString(),
-    }));
-  }, []);
-
-  // Добавление мебели в комнату
-  const addFurniture = useCallback(
-    (roomId: string, furniture: Omit<FurnitureItem, 'id'>) => {
-      const newFurniture: FurnitureItem = {
-        ...furniture,
-        id: generateId(),
-      };
-
-      setProject((prev) => ({
-        ...prev,
-        rooms: prev.rooms.map((room) =>
-          room.id === roomId
-            ? { ...room, furniture: [...room.furniture, newFurniture] }
-            : room
-        ),
-        updatedAt: new Date().toISOString(),
-      }));
-
-      return newFurniture.id;
-    },
-    []
-  );
-
-  // Обновление мебели
-  const updateFurniture = useCallback(
-    (roomId: string, furnitureId: string, updates: Partial<FurnitureItem>) => {
-      setProject((prev) => ({
-        ...prev,
-        rooms: prev.rooms.map((room) =>
-          room.id === roomId
-            ? {
-                ...room,
-                furniture: room.furniture.map((f) =>
-                  f.id === furnitureId ? { ...f, ...updates } : f
-                ),
-              }
-            : room
-        ),
-        updatedAt: new Date().toISOString(),
-      }));
-    },
-    []
-  );
-
-  // Удаление мебели
-  const deleteFurniture = useCallback((roomId: string, furnitureId: string) => {
-    setProject((prev) => ({
-      ...prev,
-      rooms: prev.rooms.map((room) =>
-        room.id === roomId
-          ? { ...room, furniture: room.furniture.filter((f) => f.id !== furnitureId) }
-          : room
-      ),
-      updatedAt: new Date().toISOString(),
-    }));
-  }, []);
-
-  // Добавление двери/окна
-  const addDoorWindow = useCallback(
-    (roomId: string, type: 'door' | 'window', data: Omit<DoorWindow, 'id' | 'type'>) => {
-      const newItem: DoorWindow = {
-        ...data,
-        id: generateId(),
-        type,
-      };
-
-      setProject((prev) => ({
-        ...prev,
-        rooms: prev.rooms.map((room) =>
-          room.id === roomId
-            ? {
-                ...room,
-                [type === 'door' ? 'doors' : 'windows']: [
-                  ...(type === 'door' ? room.doors : room.windows),
-                  newItem,
-                ],
-              }
-            : room
-        ),
-        updatedAt: new Date().toISOString(),
-      }));
-
-      return newItem.id;
-    },
-    []
-  );
-
-  // Удаление двери/окна
-  const deleteDoorWindow = useCallback(
-    (roomId: string, itemId: string, type: 'door' | 'window') => {
-      setProject((prev) => ({
-        ...prev,
-        rooms: prev.rooms.map((room) =>
-          room.id === roomId
-            ? {
-                ...room,
-                [type === 'door' ? 'doors' : 'windows']: (
-                  type === 'door' ? room.doors : room.windows
-                ).filter((item) => item.id !== itemId),
-              }
-            : room
-        ),
-        updatedAt: new Date().toISOString(),
-      }));
-    },
-    []
-  );
-
-  // Новый проект
-  const newProject = useCallback(() => {
-    setProject(createDefaultProject());
-  }, []);
-
-  // Экспорт проекта
-  const exportProject = useCallback(() => {
-    const dataStr = JSON.stringify(project, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${project.name.replace(/\s+/g, '_')}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }, [project]);
-
-  // Импорт проекта
-  const importProject = useCallback((file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const imported = JSON.parse(e.target?.result as string);
-        setProject(imported);
-      } catch (error) {
-        console.error('Ошибка импорта проекта:', error);
-        alert('Ошибка при импорте проекта. Проверьте формат файла.');
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
       }
     };
-    reader.readAsText(file);
+  }, [state.isInterviewStarted, state.timeRemaining]);
+
+  // Выбор роли
+  const selectRole = useCallback((role: Role) => {
+    setState((prev) => ({
+      ...prev,
+      currentRole: role,
+    }));
+  }, []);
+
+  // Установка имени кандидата
+  const setCandidateName = useCallback((name: string) => {
+    setState((prev) => ({
+      ...prev,
+      candidateName: name,
+    }));
+  }, []);
+
+  // Начало интервью
+  const startInterview = useCallback((timeLimit: number) => {
+    setState((prev) => ({
+      ...prev,
+      isInterviewStarted: true,
+      timeRemaining: timeLimit * 60, // конвертируем минуты в секунды
+      currentTaskIndex: 0,
+    }));
+  }, []);
+
+  // Переход к следующей задаче
+  const nextTask = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      currentTaskIndex: prev.currentTaskIndex + 1,
+    }));
+  }, []);
+
+  // Переход к предыдущей задаче
+  const prevTask = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      currentTaskIndex: Math.max(0, prev.currentTaskIndex - 1),
+    }));
+  }, []);
+
+  // Отметка задачи как выполненной
+  const completeTask = useCallback((taskId: string) => {
+    setState((prev) => ({
+      ...prev,
+      completedTasks: [...prev.completedTasks, taskId],
+    }));
+  }, []);
+
+  // Сброс интервью
+  const resetInterview = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    setState(createDefaultState());
+    setCode('');
+    setBugReports([]);
+    setTestCases([]);
+    setAnalysisNotes('');
+    setRequirements('');
+    localStorage.removeItem(STORAGE_KEY);
+  }, []);
+
+  // Добавление баг-репорта
+  const addBugReport = useCallback((report: Omit<BugReport, 'id' | 'reportedAt'>) => {
+    const newReport: BugReport = {
+      ...report,
+      id: `bug-${Date.now()}`,
+      reportedAt: new Date(),
+    };
+    setBugReports((prev) => [...prev, newReport]);
+    return newReport;
+  }, []);
+
+  // Удаление баг-репорта
+  const removeBugReport = useCallback((id: string) => {
+    setBugReports((prev) => prev.filter((r) => r.id !== id));
+  }, []);
+
+  // Добавление тест-кейса
+  const addTestCase = useCallback((testCase: Omit<TestCaseDoc, 'id'>) => {
+    const newTestCase: TestCaseDoc = {
+      ...testCase,
+      id: `tc-${Date.now()}`,
+    };
+    setTestCases((prev) => [...prev, newTestCase]);
+    return newTestCase;
+  }, []);
+
+  // Удаление тест-кейса
+  const removeTestCase = useCallback((id: string) => {
+    setTestCases((prev) => prev.filter((tc) => tc.id !== id));
+  }, []);
+
+  // Форматирование времени
+  const formatTime = useCallback((seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
   return {
-    project,
-    updateProject,
-    addRoom,
-    updateRoom,
-    deleteRoom,
-    addFurniture,
-    updateFurniture,
-    deleteFurniture,
-    addDoorWindow,
-    deleteDoorWindow,
-    newProject,
-    exportProject,
-    importProject,
+    state,
+    code,
+    setCode,
+    bugReports,
+    testCases,
+    analysisNotes,
+    setAnalysisNotes,
+    requirements,
+    setRequirements,
+    selectRole,
+    setCandidateName,
+    startInterview,
+    nextTask,
+    prevTask,
+    completeTask,
+    resetInterview,
+    addBugReport,
+    removeBugReport,
+    addTestCase,
+    removeTestCase,
+    formatTime,
   };
+}
+
+// Вспомогательная функция для генерации ID
+export function generateId(): string {
+  return Math.random().toString(36).substring(2, 11);
 }

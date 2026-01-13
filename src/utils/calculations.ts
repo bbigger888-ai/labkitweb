@@ -1,192 +1,106 @@
-import { Room, RoomEstimate, ProjectEstimate, MaterialCost, LaborCost } from '../types';
-import {
-  floorMaterialPrices,
-  floorLaborPrices,
-  wallMaterialPrices,
-  wallLaborPrices,
-  ceilingMaterialPrices,
-  ceilingLaborPrices,
-  additionalWorks,
-} from '../data/prices';
+// Утилиты для платформы интервью
 
 // Генерация уникального ID
 export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 }
 
-// Расчёт площади комнаты в м²
-export function calculateArea(room: Room): number {
-  return (room.size.width * room.size.height) / 10000; // см² в м²
+// Форматирование времени
+export function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Расчёт периметра комнаты в м
-export function calculatePerimeter(room: Room): number {
-  return (2 * (room.size.width + room.size.height)) / 100; // см в м
-}
-
-// Расчёт площади стен в м²
-export function calculateWallArea(room: Room): number {
-  const perimeter = calculatePerimeter(room);
-  const height = room.wallHeight / 100; // см в м
-
-  // Вычитаем площадь дверей и окон
-  let openingsArea = 0;
-  for (const door of room.doors) {
-    openingsArea += (door.width * door.height) / 10000;
+// Оценка сложности задачи
+export function getDifficultyColor(difficulty: 'easy' | 'medium' | 'hard'): string {
+  switch (difficulty) {
+    case 'easy':
+      return '#4caf50';
+    case 'medium':
+      return '#ff9800';
+    case 'hard':
+      return '#f44336';
+    default:
+      return '#9e9e9e';
   }
-  for (const window of room.windows) {
-    openingsArea += (window.width * window.height) / 10000;
+}
+
+// Оценка severity бага
+export function getSeverityColor(severity: 'critical' | 'major' | 'minor' | 'trivial'): string {
+  switch (severity) {
+    case 'critical':
+      return '#d32f2f';
+    case 'major':
+      return '#f57c00';
+    case 'minor':
+      return '#fbc02d';
+    case 'trivial':
+      return '#9e9e9e';
+    default:
+      return '#9e9e9e';
   }
-
-  return perimeter * height - openingsArea;
 }
 
-// Расчёт стоимости материалов и работ для комнаты
-export function calculateRoomEstimate(room: Room, includePrep: boolean = true): RoomEstimate {
-  const area = calculateArea(room);
-  const perimeter = calculatePerimeter(room);
-  const wallArea = calculateWallArea(room);
-  const ceilingArea = area;
+// Простая подсветка синтаксиса для отображения кода
+export function highlightCode(code: string): string {
+  // Ключевые слова JavaScript
+  const keywords = ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return', 'class', 'export', 'import', 'from', 'async', 'await', 'try', 'catch', 'throw', 'new', 'this', 'true', 'false', 'null', 'undefined'];
 
-  const materials: MaterialCost[] = [];
-  const labor: LaborCost[] = [];
+  let highlighted = code
+    // Экранирование HTML
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 
-  // Подготовительные работы
-  if (includePrep) {
-    // Грунтовка всех поверхностей
-    const totalSurface = area + wallArea + ceilingArea;
-    materials.push({
-      name: 'Грунтовка',
-      unit: 'м²',
-      pricePerUnit: additionalWorks.priming.price,
-      quantity: totalSurface,
-      total: additionalWorks.priming.price * totalSurface,
-    });
-    labor.push({
-      name: additionalWorks.priming.name,
-      unit: 'м²',
-      pricePerUnit: 0,
-      quantity: totalSurface,
-      total: 0,
-      daysEstimate: additionalWorks.priming.daysPerM2 * totalSurface,
-    });
+  // Подсветка строк
+  highlighted = highlighted.replace(/(["'`])(?:(?!\1)[^\\]|\\.)*\1/g, '<span class="string">$&</span>');
+
+  // Подсветка комментариев
+  highlighted = highlighted.replace(/(\/\/.*$)/gm, '<span class="comment">$1</span>');
+
+  // Подсветка ключевых слов
+  keywords.forEach(keyword => {
+    const regex = new RegExp(`\\b(${keyword})\\b`, 'g');
+    highlighted = highlighted.replace(regex, '<span class="keyword">$1</span>');
+  });
+
+  // Подсветка чисел
+  highlighted = highlighted.replace(/\b(\d+)\b/g, '<span class="number">$1</span>');
+
+  return highlighted;
+}
+
+// Валидация email
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Получение иконки роли
+export function getRoleIcon(role: 'developer' | 'tester' | 'analyst'): string {
+  switch (role) {
+    case 'developer':
+      return '💻';
+    case 'tester':
+      return '🔍';
+    case 'analyst':
+      return '📊';
+    default:
+      return '👤';
   }
-
-  // Пол
-  const floorMaterial = floorMaterialPrices[room.floorType];
-  const floorLabor = floorLaborPrices[room.floorType];
-
-  materials.push({
-    name: floorMaterial.name,
-    unit: floorMaterial.unit,
-    pricePerUnit: floorMaterial.price,
-    quantity: area,
-    total: floorMaterial.price * area,
-  });
-
-  labor.push({
-    name: floorLabor.name,
-    unit: 'м²',
-    pricePerUnit: floorLabor.price,
-    quantity: area,
-    total: floorLabor.price * area,
-    daysEstimate: floorLabor.daysPerM2 * area,
-  });
-
-  // Стены
-  const wallMaterial = wallMaterialPrices[room.wallType];
-  const wallLabor = wallLaborPrices[room.wallType];
-
-  materials.push({
-    name: wallMaterial.name,
-    unit: wallMaterial.unit,
-    pricePerUnit: wallMaterial.price,
-    quantity: wallArea,
-    total: wallMaterial.price * wallArea,
-  });
-
-  labor.push({
-    name: wallLabor.name,
-    unit: 'м²',
-    pricePerUnit: wallLabor.price,
-    quantity: wallArea,
-    total: wallLabor.price * wallArea,
-    daysEstimate: wallLabor.daysPerM2 * wallArea,
-  });
-
-  // Потолок
-  const ceilingMaterial = ceilingMaterialPrices[room.ceilingType];
-  const ceilingLabor = ceilingLaborPrices[room.ceilingType];
-
-  materials.push({
-    name: ceilingMaterial.name,
-    unit: ceilingMaterial.unit,
-    pricePerUnit: ceilingMaterial.price,
-    quantity: ceilingArea,
-    total: ceilingMaterial.price * ceilingArea,
-  });
-
-  labor.push({
-    name: ceilingLabor.name,
-    unit: 'м²',
-    pricePerUnit: ceilingLabor.price,
-    quantity: ceilingArea,
-    total: ceilingLabor.price * ceilingArea,
-    daysEstimate: ceilingLabor.daysPerM2 * ceilingArea,
-  });
-
-  const totalMaterials = materials.reduce((sum, m) => sum + m.total, 0);
-  const totalLabor = labor.reduce((sum, l) => sum + l.total, 0);
-  const totalDays = labor.reduce((sum, l) => sum + l.daysEstimate, 0);
-
-  return {
-    roomId: room.id,
-    roomName: room.name,
-    area,
-    perimeter,
-    wallArea,
-    ceilingArea,
-    materials,
-    labor,
-    totalMaterials,
-    totalLabor,
-    totalDays,
-  };
 }
 
-// Расчёт общей стоимости проекта
-export function calculateProjectEstimate(rooms: Room[]): ProjectEstimate {
-  const roomEstimates = rooms.map((room) => calculateRoomEstimate(room));
-
-  const totalArea = roomEstimates.reduce((sum, r) => sum + r.area, 0);
-  const totalMaterials = roomEstimates.reduce((sum, r) => sum + r.totalMaterials, 0);
-  const totalLabor = roomEstimates.reduce((sum, r) => sum + r.totalLabor, 0);
-  const totalDaysEstimate = roomEstimates.reduce((sum, r) => sum + r.totalDays, 0);
-
-  return {
-    rooms: roomEstimates,
-    totalArea,
-    totalMaterials,
-    totalLabor,
-    grandTotal: totalMaterials + totalLabor,
-    totalDaysEstimate: Math.ceil(totalDaysEstimate),
-  };
-}
-
-// Форматирование денежной суммы
-export function formatCurrency(amount: number, currency: string = '₽'): string {
-  return `${Math.round(amount).toLocaleString('ru-RU')} ${currency}`;
-}
-
-// Форматирование площади
-export function formatArea(area: number): string {
-  return `${area.toFixed(2)} м²`;
-}
-
-// Форматирование размера в см/м
-export function formatSize(cm: number): string {
-  if (cm >= 100) {
-    return `${(cm / 100).toFixed(2)} м`;
+// Получение названия роли
+export function getRoleName(role: 'developer' | 'tester' | 'analyst'): string {
+  switch (role) {
+    case 'developer':
+      return 'Разработчик';
+    case 'tester':
+      return 'Тестировщик';
+    case 'analyst':
+      return 'Аналитик';
+    default:
+      return 'Неизвестно';
   }
-  return `${cm} см`;
 }
