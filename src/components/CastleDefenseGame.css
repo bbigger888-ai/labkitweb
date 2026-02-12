@@ -1,0 +1,271 @@
+.castle-game-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.castle-game-container {
+  background: #1a1a2e;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 95vh;
+  border: 2px solid #333;
+}
+
+.castle-game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #16213e;
+  border-bottom: 2px solid #333;
+}
+
+.castle-game-header h2 {
+  margin: 0;
+  color: #FFD700;
+  font-size: 20px;
+}
+
+.castle-game-close {
+  background: #F44336;
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.castle-game-close:hover {
+  background: #D32F2F;
+}
+
+.castle-game-stats {
+  display: flex;
+  gap: 24px;
+  padding: 10px 20px;
+  background: #0f3460;
+  border-bottom: 1px solid #333;
+  flex-wrap: wrap;
+}
+
+.castle-game-stats .stat {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.castle-game-body {
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+}
+
+.castle-game-canvas-wrapper {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  background: #111;
+}
+
+.castle-game-canvas-wrapper canvas {
+  border-radius: 8px;
+  cursor: crosshair;
+  max-width: 100%;
+  height: auto;
+}
+
+.castle-game-sidebar {
+  width: 200px;
+  min-width: 200px;
+  background: #16213e;
+  border-left: 2px solid #333;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.castle-game-sidebar h3 {
+  margin: 0 0 8px 0;
+  color: #ccc;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tower-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tower-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #1a1a2e;
+  border: 2px solid #333;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 13px;
+}
+
+.tower-btn:hover {
+  border-color: #666;
+  background: #222;
+}
+
+.tower-btn.active {
+  border-color: #FFD700;
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.tower-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tower-emoji {
+  font-size: 20px;
+}
+
+.tower-name {
+  flex: 1;
+}
+
+.tower-cost {
+  color: #FFD700;
+  font-size: 12px;
+}
+
+.tower-info-panel {
+  background: #1a1a2e;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.tower-info-panel h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.tower-info-panel p {
+  margin: 2px 0;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.upgrade-btn, .sell-btn {
+  width: 100%;
+  padding: 6px;
+  margin-top: 6px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.upgrade-btn {
+  background: #4CAF50;
+  color: white;
+}
+
+.upgrade-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sell-btn {
+  background: #FF5722;
+  color: white;
+}
+
+.upgrade-btn:hover:not(.disabled), .sell-btn:hover {
+  opacity: 0.85;
+}
+
+.enemy-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.enemy-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ccc;
+  font-size: 13px;
+}
+
+.enemy-hp {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.game-controls {
+  margin-top: auto;
+}
+
+.wave-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #FFD700, #FFA000);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #1a1a2e;
+  transition: transform 0.1s, box-shadow 0.2s;
+}
+
+.wave-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+}
+
+.wave-btn:active {
+  transform: scale(0.98);
+}
+
+.wave-progress {
+  text-align: center;
+  color: #F44336;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

@@ -4,6 +4,7 @@ import { Toolbar } from './components/Toolbar';
 import { FurnitureLibrary } from './components/FurnitureLibrary';
 import { PropertiesPanel } from './components/PropertiesPanel';
 import { CostCalculator } from './components/CostCalculator';
+import { CastleDefenseGame } from './components/CastleDefenseGame';
 import { useProject } from './hooks/useProject';
 import { EditorTool, RoomType, Point, FurnitureItem } from './types';
 import { furnitureTemplates } from './data/furniture';
@@ -29,6 +30,7 @@ function App() {
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [selectedFurnitureId, setSelectedFurnitureId] = useState<string | null>(null);
   const [showCalculator, setShowCalculator] = useState(false);
+  const [showGame, setShowGame] = useState(false);
 
   const selectedRoom = project.rooms.find((r) => r.id === selectedRoomId) || null;
   const selectedFurniture =
@@ -209,6 +211,9 @@ function App() {
           <span className="logo-text">Планировщик квартиры</span>
         </div>
         <div className="app-actions">
+          <button className="calculator-btn" onClick={() => setShowGame(true)}>
+            🏰 Оборона замка
+          </button>
           <button className="calculator-btn" onClick={() => setShowCalculator(true)}>
             🧮 Расчёт стоимости
           </button>
@@ -263,6 +268,10 @@ function App() {
 
         <FurnitureLibrary />
       </div>
+
+      {showGame && (
+        <CastleDefenseGame onClose={() => setShowGame(false)} />
+      )}
 
       {showCalculator && (
         <CostCalculator
