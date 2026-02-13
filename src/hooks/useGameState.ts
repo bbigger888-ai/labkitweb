@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { GSIState, ConnectionStatus, DerivedTimings } from '../types/gsi';
 
-const WS_URL = 'ws://localhost:3002';
+// Подключаемся к WS на том же хосте, откуда открыта страница
+const WS_URL = `ws://${window.location.hostname}:3002`;
 const RECONNECT_DELAY = 2000;
 
 export function useGameState() {
