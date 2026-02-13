@@ -8,7 +8,7 @@ const GSI_PORT = 3001;
 const WS_PORT = 3002;
 
 // WebSocket сервер для клиентов (React frontend)
-const wss = new WebSocketServer({ port: WS_PORT });
+const wss = new WebSocketServer({ host: '0.0.0.0', port: WS_PORT });
 const clients = new Set();
 
 wss.on('connection', (ws) => {
@@ -80,7 +80,7 @@ function formatTime(seconds) {
   return `${neg ? '-' : ''}${m}:${s.toString().padStart(2, '0')}`;
 }
 
-server.listen(GSI_PORT, () => {
+server.listen(GSI_PORT, '0.0.0.0', () => {
   console.log(`
 ╔══════════════════════════════════════════════════╗
 ║           Dota 2 GSI Monitor Server              ║
